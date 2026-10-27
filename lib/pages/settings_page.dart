@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// Halaman Pengaturan (Challenge ⭐ Pertemuan 2)
 class SettingsPage extends StatefulWidget {
@@ -30,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text('Pengaturan'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context, _showBio),
+          onPressed: () => context.pop(_showBio),
         ),
       ),
       body: ListView(
@@ -58,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
           const ListTile(
             leading: Icon(Icons.info_outline),
             title: Text('Versi Aplikasi'),
-            subtitle: Text('Kartu Profil Digital v1.0.0 (Modul 8)'),
+            subtitle: Text('Kartu Profil Digital v1.0.0 (Modul 8 - go_router)'),
           ),
         ],
       ),

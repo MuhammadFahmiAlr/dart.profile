@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import '../data/dummy_data.dart';
 import '../models/models.dart';
 import '../pages/edit_profile_page.dart';
@@ -9,54 +10,46 @@ import '../pages/settings_page.dart';
 import '../pages/splash_page.dart';
 import 'app_routes.dart';
 
-/// Router terpusat untuk named routes (Lab 5 & Pertemuan 2)
-class AppRouter {
-  AppRouter._();
-
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    final args = settings.arguments;
-
-    switch (settings.name) {
-      case AppRoutes.splash:
-        return _build(const SplashPage(), settings);
-
-      case AppRoutes.profile:
-        return _build(const ProfilePage(), settings);
-
-      case AppRoutes.projectDetail:
-        // Mendukung pengiriman objek Project (Lab 5) MAUPUN pengiriman ID string (Challenge ⭐⭐ Pertemuan 2)
-        if (args is Project) {
-          return _build(ProjectDetailPage(project: args), settings);
-        } else if (args is String) {
-          final project = findProjectById(args);
-          if (project != null) {
-            return _build(ProjectDetailPage(project: project), settings);
-          }
-        }
-        return _build(const NotFoundPage(), settings);
-
-      case AppRoutes.editProfile:
-        // Periksa tipe arguments sebelum dipakai
-        if (args is Profile) {
-          return _build(EditProfilePage(profile: args), settings);
-        }
-        return _build(const NotFoundPage(), settings);
-
-      case AppRoutes.settings:
-        final initialShowBio = (args is bool) ? args : true;
-        return _build(SettingsPage(initialShowBio: initialShowBio), settings);
-
-      default:
-        // Halaman 404 jika route tidak dikenali (Lab 6)
-        return _build(const NotFoundPage(), settings);
-    }
-  }
-
-  /// Pembungkus: `settings` wajib diteruskan agar nama route tercatat di Navigator & LogObserver
-  static MaterialPageRoute<dynamic> _build(Widget page, RouteSettings settings) {
-    return MaterialPageRoute(
-      builder: (_) => page,
-      settings: settings,
-    );
-  }
-}
+/// Router deklaratif menggunakan go_router (Lab 8)
+final GoRouter appRouter = GoRouter(
+  initialLocation: AppRoutes.splash,
+  debugLogDiagnostics: true, // cetak log navigasi di Debug Console
+  errorBuilder: (context, state) => const NotFoundPage(), // pengganti halaman 404
+  routes: [
+    GoRoute(
+      path: AppRoutes.splash,
+      builder: (context, state) => const SplashPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.profile,
+      builder: (context, state) => const ProfilePage(),
+      routes: [
+        // Route anak: path RELATIF (tanpa "/" di depan)
+        GoRoute(
+          path: 'projects/:id',
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            final project = findProjectById(id);
+            if (project == null) return const NotFoundPage();
+            return ProjectDetailPage(project: project);
+          },
+        ),
+        GoRoute(
+          path: 'edit',
+          builder: (context, state) {
+            final profile = state.extra; // objek yang dikirim lewat `extra`
+            if (profile is! Profile) return const NotFoundPage();
+            return EditProfilePage(profile: profile);
+          },
+        ),
+        GoRoute(
+          path: 'settings',
+          builder: (context, state) {
+            final initialShowBio = (state.extra is bool) ? state.extra as bool : true;
+            return SettingsPage(initialShowBio: initialShowBio);
+          },
+        ),
+      ],
+    ),
+  ],
+);

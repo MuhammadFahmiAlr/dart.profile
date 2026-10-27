@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../app/app_routes.dart';
 import '../data/dummy_data.dart';
 import '../models/models.dart';
@@ -14,26 +15,19 @@ class _ProfilePageState extends State<ProfilePage> {
   Profile _profile = defaultProfile;
   bool _showBio = true; // Terhubung dengan Challenge ⭐ Pertemuan 2 (Settings)
 
-  /// Navigasi ke Detail Proyek (Lab 5 & Challenge ⭐⭐ Pertemuan 2)
+  /// Navigasi ke Detail Proyek via go_router (Lab 8.6)
   void _openProjectDetail(Project project) {
-    // Mengirim ID proyek sebagai argument string (Challenge ⭐⭐ Pertemuan 2)
-    Navigator.pushNamed(
-      context,
-      AppRoutes.projectDetail,
-      arguments: project.id,
-    );
+    context.push(AppRoutes.projectDetail(project.id));
   }
 
-  /// Navigasi ke Edit Profil dan tangkap hasilnya (Lab 3, Lab 5 & Challenge ⭐⭐ Pertemuan 1)
+  /// Navigasi ke Edit Profil via go_router (Lab 8.6)
   Future<void> _openEditProfile() async {
-    final result = await Navigator.pushNamed(
-      context,
+    final result = await context.push<Profile>(
       AppRoutes.editProfile,
-      arguments: _profile,
+      extra: _profile,
     );
 
-    // Cek mounted dan tipe result
-    if (!mounted || result is! Profile) return;
+    if (!mounted || result == null) return;
 
     setState(() => _profile = result);
 
@@ -51,19 +45,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   /// Navigasi ke Halaman Pengaturan (Challenge ⭐ Pertemuan 2)
   Future<void> _openSettings() async {
-    final result = await Navigator.pushNamed(
-      context,
+    final result = await context.push<bool>(
       AppRoutes.settings,
-      arguments: _showBio,
+      extra: _showBio,
     );
 
-    if (!mounted || result is! bool) return;
+    if (!mounted || result == null) return;
     setState(() => _showBio = result);
   }
 
-  /// Navigasi Logout dengan konfirmasi dialog (Lab 6 & Bonus Challenge Pertemuan 2)
+  /// Navigasi Logout dengan konfirmasi dialog via go_router (Lab 8.6 & Bonus Challenge)
   Future<void> _logout() async {
-    // 🌟 Bonus: Konfirmasi dialog sebelum logout
     final confirm = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
@@ -88,17 +80,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (confirm != true || !mounted) return;
 
-    // pushNamedAndRemoveUntil: Pindah ke Splash dan hapus semua halaman di stack (Lab 6)
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.splash,
-      (route) => false,
-    );
+    // context.go: stack dibersihkan tanpa RemoveUntil (Lab 8.6)
+    context.go(AppRoutes.splash);
   }
 
-  /// Tombol pengujian halaman 404 (Lab 6)
+  /// Tombol pengujian halaman 404 via go_router (Lab 8.7)
   void _testNotFoundRoute() {
-    Navigator.pushNamed(context, '/halaman-ngawur');
+    context.go('/halaman-ngawur');
   }
 
   @override
@@ -251,7 +239,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
           const SizedBox(height: 20),
 
-          // Tombol Uji Halaman 404 (Lab 6)
+          // Tombol Uji Halaman 404 (Lab 6 / 8)
           Center(
             child: TextButton.icon(
               onPressed: _testNotFoundRoute,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../models/models.dart';
 
 class ProjectDetailPage extends StatelessWidget {
@@ -87,7 +88,7 @@ class ProjectDetailPage extends StatelessWidget {
               width: double.infinity,
               height: 48,
               child: FilledButton.icon(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.pop(),
                 icon: const Icon(Icons.arrow_back),
                 label: const Text('Kembali ke Profil'),
               ),

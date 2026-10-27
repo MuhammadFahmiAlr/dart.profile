@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../app/app_routes.dart';
 
 class SplashPage extends StatefulWidget {
@@ -17,8 +18,8 @@ class _SplashPageState extends State<SplashPage> {
 
   void _goToProfile() {
     if (!mounted) return;
-    // pushReplacementNamed: mengganti Splash dengan Profile (Splash dihapus dari stack)
-    Navigator.pushReplacementNamed(context, AppRoutes.profile);
+    // context.go: ganti seluruh stack, mirip pushReplacement di Navigator
+    context.go(AppRoutes.profile);
   }
 
   @override

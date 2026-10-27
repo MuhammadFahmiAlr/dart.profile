@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../app/app_routes.dart';
 
 class NotFoundPage extends StatelessWidget {
@@ -28,17 +29,13 @@ class NotFoundPage extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Route atau data yang kamu cari tidak tersedia atau argumen tidak valid.',
+                'Route atau data yang kamu cari tidak tersedia atau URL tidak valid.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.grey[600]),
               ),
               const SizedBox(height: 24),
               FilledButton.icon(
-                onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  AppRoutes.profile,
-                  (route) => false,
-                ),
+                onPressed: () => context.go(AppRoutes.profile),
                 icon: const Icon(Icons.home_rounded),
                 label: const Text('Ke Beranda'),
               ),

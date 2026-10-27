@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../models/models.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -70,10 +71,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (_hasChanges) {
       final discard = await _showDiscardDialog();
       if (discard && mounted) {
-        Navigator.pop(context);
+        context.pop();
       }
     } else {
-      Navigator.pop(context);
+      context.pop();
     }
   }
 
@@ -86,8 +87,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       bio: _bioController.text.trim(),
     );
 
-    // Tutup halaman SEKALIGUS kirim hasil ke halaman sebelumnya (Lab 3)
-    Navigator.pop(context, updated);
+    // Tutup halaman SEKALIGUS kirim hasil ke halaman sebelumnya (Lab 8.6)
+    context.pop(updated);
   }
 
   @override
@@ -99,7 +100,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (didPop) return;
         final discard = await _showDiscardDialog();
         if (discard && context.mounted) {
-          Navigator.pop(context);
+          context.pop();
         }
       },
       child: Scaffold(

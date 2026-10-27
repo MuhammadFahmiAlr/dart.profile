@@ -55,8 +55,12 @@ void main() {
     await tester.tap(find.byIcon(Icons.arrow_back));
     await tester.pumpAndSettle();
 
-    // 5. Uji Navigasi Route 404 (Lab 6)
-    await tester.drag(find.byType(ListView), const Offset(0, -300));
+    // 5. Uji Navigasi Route 404 (Lab 6 & 8)
+    // Tunggu SnackBar selesai agar tidak menghalangi hit-test
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+
+    await tester.drag(find.byType(ListView), const Offset(0, -400));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Uji Navigasi Route 404'));
     await tester.pumpAndSettle();
